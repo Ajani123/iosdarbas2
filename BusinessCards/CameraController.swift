@@ -101,7 +101,7 @@ class CameraController: UIViewController, UINavigationControllerDelegate, UIImag
             body.append("Content-Type: JPEG\r\n\r\n".data(using: .utf8)!)
             body.append(imageData! as Data)
             body.append("\r\n".data(using: .utf8)!)
-                        
+            
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"languages\"\r\n\r\n".data(using: .utf8)!)
             body.append("\("lt")\r\n".data(using: .utf8)!)
@@ -131,6 +131,10 @@ class CameraController: UIViewController, UINavigationControllerDelegate, UIImag
           print(json)
           if let ocr_results = json["text_block"][0]["text"].string {
              print(ocr_results)
+            
+           let editViewController1 =  self.storyboard?.instantiateViewController(withIdentifier: "EditViewController1") as! EditViewController1
+            self.present(editViewController1, animated: false, completion:nil)
+            editViewController1.initializeFields(textArray: ocr_results.components(separatedBy: "\n"))
           }
         } catch {
             
