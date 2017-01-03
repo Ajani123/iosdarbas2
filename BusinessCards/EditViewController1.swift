@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class EditViewController1: UIViewController {
    
@@ -22,6 +23,10 @@ class EditViewController1: UIViewController {
     }
     
     @IBAction func onSaveClick(_ sender: Any) {
+        save()
+        let mainwindow = self.storyboard?.instantiateViewController(withIdentifier: "FirstViewController") as! FirstViewController
+        self.present(mainwindow, animated: false, completion:nil)
+        
     }
     @IBAction func onBackClick(_ sender: Any) {
     }
@@ -73,6 +78,34 @@ class EditViewController1: UIViewController {
         let result =  phoneTest.evaluate(with: value)
         return result
     }
+    
+    func save(){
+        
+            
+            let appDelegate =
+                UIApplication.shared.delegate as! AppDelegate
+            
+            let managedContext = appDelegate.managedObjectContext
+            
+            let entity =  NSEntityDescription.entity(forEntityName: "Card",
+                                                     in:managedContext)
+            
+            let card = Card(entity: entity!,
+                                insertInto: managedContext)
+            card.setValue(NameField.text, forKey: "name")
+            card.setValue(EmailField.text, forKey: "email")
+            card.setValue(NumberField.text, forKey: "number")
+            card.setValue(WebAddrField.text, forKey: "webaddr")
+            card.setValue(false, forKey: "isMyCard")
+            
+            do {
+                try managedContext.save()
+            } catch let error as NSError  {
+                print("Could not save \(error), \(error.userInfo)")
+            }
+        }
+
+    
 
 
 }
