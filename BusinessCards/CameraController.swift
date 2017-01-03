@@ -88,7 +88,7 @@ class CameraController: UIViewController, UINavigationControllerDelegate, UIImag
      let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
         
      let myImage = resizeImage(image: imageToRead.image!, targetSize: CGSize(width: 1280, height: 720))
-     let imageData = UIImageJPEGRepresentation(myImage, 0.2)
+     let imageData = UIImageJPEGRepresentation(myImage, 1)
         if imageData != nil{
             
            var body = Data()
