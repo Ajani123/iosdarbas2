@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		273AC2AE1E1D66490076702B /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273AC2AD1E1D66490076702B /* CardViewController.swift */; };
 		273ED66D1E15354200DC07BB /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273ED66C1E15354200DC07BB /* CameraController.swift */; };
 		274117EF1E1BD1DC000B7DFC /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 274117ED1E1BD1DC000B7DFC /* Model.xcdatamodeld */; };
 		276891491E14187B00444371 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276891481E14187B00444371 /* AppDelegate.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		273AC2AD1E1D66490076702B /* CardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
 		273ED66C1E15354200DC07BB /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		274117EE1E1BD1DC000B7DFC /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		276891451E14187B00444371 /* BusinessCards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BusinessCards.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				276891481E14187B00444371 /* AppDelegate.swift */,
+				273AC2AD1E1D66490076702B /* CardViewController.swift */,
 				2768914A1E14187B00444371 /* FirstViewController.swift */,
 				27EAA0381E155FB90011201D /* SwiftyJSON.swift */,
 				2768914C1E14187B00444371 /* EditViewController1.swift */,
@@ -279,6 +282,7 @@
 				276891491E14187B00444371 /* AppDelegate.swift in Sources */,
 				273ED66D1E15354200DC07BB /* CameraController.swift in Sources */,
 				274117EF1E1BD1DC000B7DFC /* Model.xcdatamodeld in Sources */,
+				273AC2AE1E1D66490076702B /* CardViewController.swift in Sources */,
 				27EAA0391E155FB90011201D /* SwiftyJSON.swift in Sources */,
 				27EAA0371E1559F80011201D /* TableViewController.swift in Sources */,
 				2768914B1E14187B00444371 /* FirstViewController.swift in Sources */,

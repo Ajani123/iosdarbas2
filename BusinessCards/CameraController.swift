@@ -131,10 +131,13 @@ class CameraController: UIViewController, UINavigationControllerDelegate, UIImag
           print(json)
           if let ocr_results = json["text_block"][0]["text"].string {
              print(ocr_results)
+            self.tabBarController?.selectedIndex = 4
             
-           let editViewController1 =  self.storyboard?.instantiateViewController(withIdentifier: "EditViewController1") as! EditViewController1
-            self.present(editViewController1, animated: false, completion:nil)
+            
+         //  let editViewController1 =  self.storyboard?.instantiateViewController(withIdentifier: "EditViewController1") as! EditViewController1
+            let editViewController1 = self.tabBarController?.viewControllers?[4] as! EditViewController1
             editViewController1.initializeFields(textArray: ocr_results.components(separatedBy: "\n"))
+            
           }
         } catch {
             

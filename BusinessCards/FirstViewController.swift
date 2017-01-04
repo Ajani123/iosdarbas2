@@ -10,8 +10,23 @@ import UIKit
 
 class FirstViewController: UIViewController {
 
+    @IBAction func EditClick(_ sender: Any) {
+        
+    }
+    
+    @IBOutlet weak var Name: UILabel!
+    @IBOutlet weak var Email: UILabel!
+    @IBOutlet weak var Number: UILabel!
+    @IBOutlet weak var WenAddr: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+       /* if let items = self.tabbarcontroller.tabBar.items as? [UITabBarItem]{
+            if items.count > 0{
+                
+            }
+        }*/
         // Do any additional setup after loading the view, typically from a nib.
     }
 

@@ -23,9 +23,16 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
     @IBOutlet weak var WebAddrField: UITextField!
     @IBOutlet weak var SaveButton: UIButton!    
     
-    override func viewDidLoad() {
+    var isEdit = false
+    var editCard : Card!
+     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tabBarItem.isEnabled = false
         
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         self.tableView1.register(UITableViewCell.self, forCellReuseIdentifier: "cell1")
         self.tableView2.register(UITableViewCell.self, forCellReuseIdentifier: "cell2")
         self.tableView3.register(UITableViewCell.self, forCellReuseIdentifier: "cell3")
@@ -34,15 +41,20 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
         
         tableView1.delegate = self
         tableView1.dataSource = self
+        tableView1.layer.borderWidth = 2.0
         
         tableView2.delegate = self
         tableView2.dataSource = self
+        tableView2.layer.borderWidth = 2.0
+        
         
         tableView3.delegate = self
         tableView3.dataSource = self
+        tableView3.layer.borderWidth = 2.0
         
         tableView4.delegate = self
         tableView4.dataSource = self
+        tableView4.layer.borderWidth = 2.0
         
         NameField.delegate = self
         EmailField.delegate = self
@@ -51,42 +63,72 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
         
         tableView1.isHidden = true
         tableView2.isHidden = true
-
+        
         tableView3.isHidden = true
         tableView4.isHidden = true
-
+        
+        
         NameField.addTarget(self, action: #selector(nameTextFieldActive), for: UIControlEvents.touchDown)
         EmailField.addTarget(self, action: #selector(emailTextFieldActive), for: UIControlEvents.touchDown)
         NumberField.addTarget(self, action: #selector(numberTextFieldActive), for: UIControlEvents.touchDown)
         WebAddrField.addTarget(self, action: #selector(webAddrTextFieldActive), for: UIControlEvents.touchDown)
+        
+        tableView1.reloadData()
+        tableView2.reloadData()
+        tableView3.reloadData()
+        tableView4.reloadData()
     }
     
     @IBAction func onSaveClick(_ sender: Any) {
-        save()
-        let mainwindow = self.storyboard?.instantiateViewController(withIdentifier: "FirstViewController") as! FirstViewController
-        self.present(mainwindow, animated: false, completion:nil)
+        if (!isEdit){
+            save()
+        } else {
+            update()
+        }
         
+        self.tabBarController?.selectedIndex = 1
+    
+       //let mainwindow = self.tabBarController?.viewControllers?[1] as! FirstViewController
+      //  let mainwindow = self.storyboard?.instantiateViewController(withIdentifier: "MyCard") as! FirstViewController
+                //  self.present(mainwindow, animated: false, completion:nil)
     }
     @IBAction func onBackClick(_ sender: Any) {
     }
-
+    public func initEditCard(card : Card){
+        NameField.text = card.name
+        EmailField.text = card.email
+        NumberField.text = card.number
+        WebAddrField.text = card.webaddr
+        editCard = card
+        isEdit = true
+    }
+    
     public func initializeFields(textArray: [String]) {
+        isEdit = false
         self.textarray = textArray
         let arrayCopy = textArray;
+        var isNameFieldSet = false
+        var isEmailFieldSet = false
+        var isNumberFieldSet = false
+        var isURLFieldSet = false
         
             for j in 0...arrayCopy.count-1{
                 
-                if (textArray[j].components(separatedBy:" ").count==2){
+                if (textArray[j].components(separatedBy:" ").count==2 && !isNameFieldSet){
                     NameField.text = textArray[j]
+                    isNameFieldSet = true;
                 }
-                if (isValidEmail(testStr: textArray[j])){
+                if (isValidEmail(testStr: textArray[j]) && !isEmailFieldSet){
                     EmailField.text = textArray[j]
+                    isEmailFieldSet = true;
                 }
-                if (validate(value: textArray[j])){
+                if (validate(value: textArray[j]) && !isNumberFieldSet){
                     NumberField.text = textArray[j]
+                    isNumberFieldSet = true;
                 }
-                if (verifyUrl(urlString: textArray[j])){
+                if (verifyUrl(urlString: textArray[j]) && !isURLFieldSet){
                     WebAddrField.text = textArray[j]
+                    isURLFieldSet = true;
                 }
             }
     }
@@ -116,7 +158,20 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
         let result =  phoneTest.evaluate(with: value)
         return result
     }
+    func update(){
+           let sumting = editCard as NSManagedObject
+        sumting.setValue(NameField.text, forKey: "name")
+        sumting.setValue(EmailField.text, forKey: "email")
+        sumting.setValue(NumberField.text, forKey: "number")
+        sumting.setValue(WebAddrField.text, forKey: "webaddr")
+     
+        do {
+            try sumting.managedObjectContext?.save()
+        } catch let error as NSError  {
+            print("Could not save \(error), \(error.userInfo)")
+        }
     
+    }
     func save(){
         
             
