@@ -19,6 +19,9 @@ class CardViewController: UIViewController {
     @IBOutlet weak var webAddr: UILabel!
     var selectedCard : Card!
     @IBAction func onEditClick(_ sender: Any) {
+        self.tabBarController?.selectedIndex = 4
+        let editViewController1 = self.tabBarController?.viewControllers?[4] as! EditViewController1
+        editViewController1.initEditCard(card: selectedCard)
     }
     
     

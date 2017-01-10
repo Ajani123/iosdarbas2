@@ -137,6 +137,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         } catch let error as NSError {
             print("Could not fetch \(error), \(error.userInfo)")
         }
+        for i in 0 ... cards.count-1{
+            if cards[i].isMyCard==true{
+                cards.remove(at: i)
+                break
+            }
+        }
         return cards
     }
     

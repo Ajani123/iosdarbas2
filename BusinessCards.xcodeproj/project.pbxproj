@@ -110,8 +110,8 @@
 			isa = PBXGroup;
 			children = (
 				276891481E14187B00444371 /* AppDelegate.swift */,
-				273AC2AD1E1D66490076702B /* CardViewController.swift */,
 				2768914A1E14187B00444371 /* FirstViewController.swift */,
+				273AC2AD1E1D66490076702B /* CardViewController.swift */,
 				27EAA0381E155FB90011201D /* SwiftyJSON.swift */,
 				2768914C1E14187B00444371 /* EditViewController1.swift */,
 				2768914E1E14187B00444371 /* Main.storyboard */,

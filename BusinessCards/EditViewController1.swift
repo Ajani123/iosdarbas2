@@ -23,6 +23,7 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
     @IBOutlet weak var WebAddrField: UITextField!
     @IBOutlet weak var SaveButton: UIButton!    
     
+    var isMyCard = false
     var isEdit = false
     var editCard : Card!
      override func viewDidLoad() {
@@ -80,31 +81,98 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     @IBAction func onSaveClick(_ sender: Any) {
-        if (!isEdit){
-            save()
-        } else {
-            update()
-        }
+        if (validateBeforeSave()){
+            if (!isEdit){
+                if isMyCard{
+                    saveMyCard()
+                } else {
+                    save()
+                }
+            } else {
+                if isMyCard{
+                    updateMyCard()
+                } else{
+                    update()
+                }
+            }
         
-        self.tabBarController?.selectedIndex = 1
-    
+        
+            self.tabBarController?.selectedIndex = 1
+        }
        //let mainwindow = self.tabBarController?.viewControllers?[1] as! FirstViewController
       //  let mainwindow = self.storyboard?.instantiateViewController(withIdentifier: "MyCard") as! FirstViewController
                 //  self.present(mainwindow, animated: false, completion:nil)
     }
-    @IBAction func onBackClick(_ sender: Any) {
+    
+    func validateBeforeSave()-> Bool{
+        if (!isValidEmail(testStr: EmailField.text!)){
+            alertBox(str: "Email invalid")
+            return false
+        }
+        if (!verifyUrl(urlString: WebAddrField.text!)){
+            alertBox(str: "Web address invalid")
+            return false
+        }
+        if (!validate(value: NumberField.text!)){
+            alertBox(str: "Number invalid")
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func alertBox(str : String){
+        let alert = UIAlertController(title: "Alert", message: str, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+
+    
+    public func clearLabels(){
+        NameField.text = ""
+        EmailField.text = ""
+        NumberField.text = ""
+        WebAddrField.text = ""
     }
     public func initEditCard(card : Card){
+        clearLabels()
         NameField.text = card.name
         EmailField.text = card.email
         NumberField.text = card.number
         WebAddrField.text = card.webaddr
         editCard = card
         isEdit = true
+        isMyCard = false
+        textarray.removeAll()
+    }
+    
+    public func initMyCard(card : Card){
+        clearLabels()
+
+        NameField.text = card.name
+        EmailField.text = card.email
+        NumberField.text = card.number
+        WebAddrField.text = card.webaddr
+        editCard = card
+        isEdit = true
+        isMyCard = true
+        textarray.removeAll()
+    }
+    public func createMyCard(){
+        clearLabels()
+
+        isMyCard = true
+        isEdit = false
+        textarray.removeAll()
+        
     }
     
     public func initializeFields(textArray: [String]) {
+        clearLabels()
+
         isEdit = false
+        isMyCard = false
         self.textarray = textArray
         let arrayCopy = textArray;
         var isNameFieldSet = false
@@ -135,9 +203,12 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
     
     func verifyUrl (urlString: String?) -> Bool {
         //Check for nil
+        var str = "http://"
+        
         if let urlString = urlString {
             // create NSURL instance
-            if let url = NSURL(string: urlString) {
+            str.append(urlString)
+            if let url = NSURL(string: str) {
                 // check if your application can open the NSURL instance
                 return UIApplication.shared.canOpenURL(url as URL)
             }
@@ -153,9 +224,10 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
     return result
     }
     func validate(value: String) -> Bool {
-        let PHONE_REGEX = "^\\d{3}-\\d{3}-\\d{4}$"
+        let trimmedString = value.trimmingCharacters(in: .whitespaces)
+        let PHONE_REGEX = "^\\+?\\d{9,}$"
         let phoneTest = NSPredicate(format: "SELF MATCHES %@", PHONE_REGEX)
-        let result =  phoneTest.evaluate(with: value)
+        let result =  phoneTest.evaluate(with: trimmedString)
         return result
     }
     func update(){
@@ -172,6 +244,22 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
         }
     
     }
+    
+    func updateMyCard(){
+        let sumting = editCard as NSManagedObject
+        sumting.setValue(NameField.text, forKey: "name")
+        sumting.setValue(EmailField.text, forKey: "email")
+        sumting.setValue(NumberField.text, forKey: "number")
+        sumting.setValue(WebAddrField.text, forKey: "webaddr")
+        
+        do {
+            try sumting.managedObjectContext?.save()
+        } catch let error as NSError  {
+            print("Could not save \(error), \(error.userInfo)")
+        }
+        
+    }
+    
     func save(){
         
             
@@ -197,6 +285,32 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
                 print("Could not save \(error), \(error.userInfo)")
             }
         }
+    
+    func saveMyCard(){
+        
+        
+        let appDelegate =
+            UIApplication.shared.delegate as! AppDelegate
+        
+        let managedContext = appDelegate.managedObjectContext
+        
+        let entity =  NSEntityDescription.entity(forEntityName: "Card",
+                                                 in:managedContext)
+        
+        let card = Card(entity: entity!,
+                        insertInto: managedContext)
+        card.setValue(NameField.text, forKey: "name")
+        card.setValue(EmailField.text, forKey: "email")
+        card.setValue(NumberField.text, forKey: "number")
+        card.setValue(WebAddrField.text, forKey: "webaddr")
+        card.setValue(true, forKey: "isMyCard")
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError  {
+            print("Could not save \(error), \(error.userInfo)")
+        }
+    }
 
     
 
@@ -245,19 +359,27 @@ class EditViewController1: UIViewController, UITableViewDataSource, UITableViewD
     
     // Toggle the tableView visibility when click on textField
     func nameTextFieldActive() {
-        tableView1.isHidden = !tableView1.isHidden
+        if (textarray.count > 0) {
+           tableView1.isHidden = !tableView1.isHidden
+        }
     }
     
     func emailTextFieldActive() {
-        tableView2.isHidden = !tableView2.isHidden
+        if (textarray.count > 0) {
+            tableView2.isHidden = !tableView2.isHidden
+        }
     }
     
     func numberTextFieldActive() {
-        tableView3.isHidden = !tableView3.isHidden
+        if (textarray.count > 0) {
+            tableView3.isHidden = !tableView3.isHidden
+        }
     }
     
     func webAddrTextFieldActive() {
-        tableView4.isHidden = !tableView4.isHidden
+        if (textarray.count > 0) {
+            tableView4.isHidden = !tableView4.isHidden
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
